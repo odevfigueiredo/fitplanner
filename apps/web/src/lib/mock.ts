@@ -17,7 +17,7 @@ export const fallbackDashboard: DashboardSummary = {
   lastWorkout: {
     id: "log-1",
     workoutName: "Força de empurrar",
-    date: new Date().toISOString(),
+    date: "2026-05-05T21:00:00.000Z",
     durationMinutes: 58,
   },
   totalWorkoutsThisMonth: 12,

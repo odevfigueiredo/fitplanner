@@ -30,7 +30,7 @@ export const dayOfWeekLabels = [
 ] as const;
 
 export const muscleGroupSchema = z.enum(muscleGroups);
-export const workoutTypeSchema = z.enum(workoutTypes);
+export const workoutTypeSchema = z.string().trim().min(2).max(40).default("Strength");
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -108,7 +108,8 @@ export const idParamSchema = z.object({
 });
 
 export type MuscleGroup = (typeof muscleGroups)[number];
-export type WorkoutType = (typeof workoutTypes)[number];
+export type DefaultWorkoutType = (typeof workoutTypes)[number];
+export type WorkoutType = DefaultWorkoutType | (string & {});
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ExerciseCreateInput = z.infer<typeof exerciseCreateSchema>;

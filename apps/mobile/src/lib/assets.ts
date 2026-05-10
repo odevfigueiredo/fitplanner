@@ -1,4 +1,4 @@
-import type { MuscleGroup, WorkoutType } from "@fitplanner/shared";
+import type { DefaultWorkoutType, MuscleGroup } from "@fitplanner/shared";
 
 const muscleImages = {
   Chest: require("../../assets/images/muscles/chest.png"),
@@ -17,12 +17,12 @@ const trainingTypeImages = {
   Cardio: require("../../assets/images/training/cardio.png"),
   Mobility: require("../../assets/images/training/mobility.png"),
   HIIT: require("../../assets/images/training/hiit.png"),
-} satisfies Record<WorkoutType, number>;
+} satisfies Record<DefaultWorkoutType, number>;
 
 export function getMuscleImage(group?: string | null) {
   return muscleImages[group as MuscleGroup] ?? muscleImages["Full Body"];
 }
 
 export function getTrainingTypeImage(type?: string | null) {
-  return trainingTypeImages[type as WorkoutType] ?? trainingTypeImages.Strength;
+  return trainingTypeImages[type as DefaultWorkoutType] ?? trainingTypeImages.Strength;
 }

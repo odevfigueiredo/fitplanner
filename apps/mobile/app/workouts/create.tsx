@@ -15,7 +15,7 @@ export default function CreateWorkoutScreen() {
   const { token } = useAuth();
   const { data: exercises } = useResource<Exercise[]>("/exercises", fallbackExercises);
   const [name, setName] = useState("");
-  const [type, setType] = useState<(typeof workoutTypes)[number]>("Strength");
+  const [type, setType] = useState<string>("Strength");
   const [description, setDescription] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -40,7 +40,7 @@ export default function CreateWorkoutScreen() {
         method: "POST",
         body: {
           name,
-          type,
+          type: type.trim() || "Strength",
           description,
           exercises: selectedExercises.map((exercise, order) => ({
             exerciseId: exercise.id,
@@ -76,6 +76,7 @@ export default function CreateWorkoutScreen() {
             );
           })}
         </ScrollView>
+        <TextField label="Categoria personalizada" value={type} onChangeText={setType} placeholder="Push, Upper, Reabilitação..." />
       </View>
 
       <View className="gap-3">
