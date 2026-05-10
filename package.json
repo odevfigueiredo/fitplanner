@@ -1,0 +1,29 @@
+{
+  "name": "fitplanner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FitPlanner monorepo for mobile workout planning, progress tracking, API and web dashboard.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @fitplanner/api",
+    "dev:web": "npm run dev -w @fitplanner/web",
+    "dev:mobile": "npm run start -w @fitplanner/mobile",
+    "build:shared": "npm run build -w @fitplanner/shared",
+    "build:api": "npm run build:shared && npm run build -w @fitplanner/api",
+    "build:web": "npm run build:shared && npm run build -w @fitplanner/web",
+    "build": "npm run build:shared && npm run build -w @fitplanner/api && npm run build -w @fitplanner/web",
+    "test": "npm run build:shared && npm run test -w @fitplanner/api",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "prisma:generate": "npm run prisma:generate -w @fitplanner/api",
+    "prisma:migrate": "npm run prisma:migrate -w @fitplanner/api",
+    "prisma:studio": "npm run prisma:studio -w @fitplanner/api",
+    "seed": "npm run seed -w @fitplanner/api"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

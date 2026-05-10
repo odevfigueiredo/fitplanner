@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "FitPlanner",
+    "slug": "fitplanner",
+    "scheme": "fitplanner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/fitplanner-mark.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/fitplanner-mark.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050706"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/fitplanner-mark.png",
+        "backgroundColor": "#050706"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "plugins": ["expo-router", "expo-secure-store", "expo-sqlite"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

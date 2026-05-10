@@ -1,0 +1,1 @@
+ALTER TABLE `Workout` ADD COLUMN `type` VARCHAR(191) NOT NULL DEFAULT 'Strength';
