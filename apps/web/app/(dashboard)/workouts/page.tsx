@@ -37,9 +37,30 @@ type Workout = {
   isLocal?: boolean;
 };
 
+type ExerciseConfig = {
+  sets: number;
+  reps: number;
+  restSeconds: number;
+  targetWeight: string;
+};
+
+type ExerciseConfigField = keyof ExerciseConfig;
+
 const CUSTOM_WORKOUTS_KEY = "fitplanner.custom-workouts";
 const CUSTOM_CATEGORIES_KEY = "fitplanner.custom-workout-categories";
 const defaultWorkoutTypes = new Set<string>(workoutTypes);
+const defaultExerciseConfig: ExerciseConfig = { sets: 3, reps: 10, restSeconds: 90, targetWeight: "" };
+const dayOptions = [
+  { value: "", label: "Sem dia fixo" },
+  { value: "1", label: "Segunda" },
+  { value: "2", label: "Terça" },
+  { value: "3", label: "Quarta" },
+  { value: "4", label: "Quinta" },
+  { value: "5", label: "Sexta" },
+  { value: "6", label: "Sábado" },
+  { value: "0", label: "Domingo" },
+];
+const dayLabels = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
 function readStoredList<T>(key: string) {
   if (typeof window === "undefined") {
@@ -62,6 +83,25 @@ function uniqueList(items: string[]) {
   return Array.from(new Set(items.map((item) => item.trim()).filter(Boolean)));
 }
 
+function clampNumber(value: number, min: number, max: number, fallback: number) {
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(Math.round(value), min), max);
+}
+
+function normalizeConfig(config: ExerciseConfig) {
+  const parsedWeight = config.targetWeight.trim() ? Number(config.targetWeight.replace(",", ".")) : null;
+
+  return {
+    sets: clampNumber(config.sets, 1, 20, defaultExerciseConfig.sets),
+    reps: clampNumber(config.reps, 1, 200, defaultExerciseConfig.reps),
+    restSeconds: clampNumber(config.restSeconds, 0, 1800, defaultExerciseConfig.restSeconds),
+    targetWeight: parsedWeight !== null && Number.isFinite(parsedWeight) ? Math.min(Math.max(parsedWeight, 0), 1000) : null,
+  };
+}
+
 export default function WorkoutsPage() {
   const { data, isLoading, error, reload } = useResource<Workout[]>("/workouts", fallbackWorkouts as Workout[]);
   const { data: exercises } = useResource<Exercise[]>("/exercises", fallbackExercises as Exercise[]);
@@ -70,8 +110,10 @@ export default function WorkoutsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("Strength");
+  const [dayOfWeek, setDayOfWeek] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<string[]>(["global-bench-press", "global-overhead-press"]);
+  const [exerciseConfigById, setExerciseConfigById] = useState<Record<string, ExerciseConfig>>({});
   const [status, setStatus] = useState<{ tone: "success" | "error"; message: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -83,13 +125,7 @@ export default function WorkoutsPage() {
   const workouts = useMemo(() => [...localWorkouts, ...data], [data, localWorkouts]);
 
   const categories = useMemo(
-    () =>
-      uniqueList([
-        ...workoutTypes,
-        ...localCategories,
-        ...workouts.map((workout) => workout.type),
-        category,
-      ]),
+    () => uniqueList([...workoutTypes, ...localCategories, ...workouts.map((workout) => workout.type), category]),
     [category, localCategories, workouts],
   );
 
@@ -98,7 +134,22 @@ export default function WorkoutsPage() {
     [exercises, selectedExerciseIds],
   );
 
-  const previewDescription = description.trim() || "Monte a descricao do treino, selecione uma categoria e escolha os exercicios.";
+  const configuredExercises = useMemo(
+    () =>
+      selectedExercises.map((exercise, order) => ({
+        exercise,
+        order,
+        config: normalizeConfig(exerciseConfigById[exercise.id] ?? defaultExerciseConfig),
+      })),
+    [exerciseConfigById, selectedExercises],
+  );
+
+  const previewDescription = description.trim() || "Defina categoria, dia e os detalhes de cada exercício antes de salvar.";
+  const selectedDayLabel = dayOfWeek === "" ? "Sem dia fixo" : dayLabels[Number(dayOfWeek)];
+
+  function getExerciseConfig(exerciseId: string) {
+    return exerciseConfigById[exerciseId] ?? defaultExerciseConfig;
+  }
 
   function persistCategories(nextCategories: string[]) {
     const uniqueCategories = uniqueList(nextCategories);
@@ -124,15 +175,26 @@ export default function WorkoutsPage() {
   }
 
   function toggleExercise(id: string) {
-    setSelectedExerciseIds((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
+    setSelectedExerciseIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]));
+    setExerciseConfigById((current) => (current[id] ? current : { ...current, [id]: defaultExerciseConfig }));
+  }
+
+  function updateExerciseConfig(exerciseId: string, field: ExerciseConfigField, value: string | number) {
+    setExerciseConfigById((current) => ({
+      ...current,
+      [exerciseId]: {
+        ...(current[exerciseId] ?? defaultExerciseConfig),
+        [field]: value,
+      },
+    }));
   }
 
   function resetForm() {
     setName("");
     setDescription("");
+    setDayOfWeek("");
     setSelectedExerciseIds([]);
+    setExerciseConfigById({});
     setStatus(null);
   }
 
@@ -140,6 +202,7 @@ export default function WorkoutsPage() {
     event.preventDefault();
     const trimmedName = name.trim();
     const trimmedCategory = category.trim();
+    const workoutDay = dayOfWeek === "" ? null : Number(dayOfWeek);
 
     if (!trimmedName) {
       setStatus({ tone: "error", message: "Dê um nome para o treino antes de salvar." });
@@ -151,28 +214,29 @@ export default function WorkoutsPage() {
       return;
     }
 
-    if (selectedExercises.length === 0) {
+    if (configuredExercises.length === 0) {
       setStatus({ tone: "error", message: "Selecione pelo menos um exercício." });
       return;
     }
 
     const localId = `local-workout-${Date.now()}`;
+    const workoutExercises = configuredExercises.map(({ exercise, order, config }) => ({
+      id: `${localId}-exercise-${exercise.id}`,
+      sets: config.sets,
+      reps: config.reps,
+      restSeconds: config.restSeconds,
+      targetWeight: config.targetWeight,
+      order,
+      exercise,
+    }));
     const workout: Workout = {
       id: localId,
       name: trimmedName,
       type: trimmedCategory,
       description: description.trim() || "Treino personalizado criado no FitPlanner.",
-      dayOfWeek: null,
+      dayOfWeek: workoutDay,
       isLocal: true,
-      exercises: selectedExercises.map((exercise, order) => ({
-        id: `${localId}-exercise-${exercise.id}`,
-        sets: 3,
-        reps: 10,
-        restSeconds: 90,
-        targetWeight: null,
-        order,
-        exercise,
-      })),
+      exercises: workoutExercises,
     };
 
     setIsSaving(true);
@@ -187,13 +251,13 @@ export default function WorkoutsPage() {
             name: workout.name,
             type: workout.type,
             description: workout.description,
-            dayOfWeek: null,
-            exercises: selectedExercises.map((exercise, order) => ({
+            dayOfWeek: workoutDay,
+            exercises: configuredExercises.map(({ exercise, order, config }) => ({
               exerciseId: exercise.id,
-              sets: 3,
-              reps: 10,
-              restSeconds: 90,
-              targetWeight: null,
+              sets: config.sets,
+              reps: config.reps,
+              restSeconds: config.restSeconds,
+              targetWeight: config.targetWeight,
               order,
             })),
           },
@@ -219,8 +283,8 @@ export default function WorkoutsPage() {
       setStatus({
         tone: "success",
         message: requestError instanceof Error
-          ? `API indisponivel agora. O treino ficou salvo localmente. (${requestError.message})`
-          : "API indisponivel agora. O treino ficou salvo localmente.",
+          ? `API indisponível agora. O treino ficou salvo localmente. (${requestError.message})`
+          : "API indisponível agora. O treino ficou salvo localmente.",
       });
       setName("");
       setDescription("");
@@ -231,7 +295,7 @@ export default function WorkoutsPage() {
 
   return (
     <div className="grid gap-5 md:gap-6">
-      <PageHeader title="Treinos" subtitle="Crie divisões, categorias e descrições próprias para planejar a semana com clareza." />
+      <PageHeader title="Treinos" subtitle="Crie divisões, categorias, dias e metas próprias para planejar a semana com clareza." />
 
       <section className="no-scrollbar grid grid-flow-col auto-cols-[220px] gap-3 overflow-x-auto md:grid-flow-row md:grid-cols-3 md:overflow-visible xl:grid-cols-5">
         {categories.map((type) => (
@@ -254,19 +318,17 @@ export default function WorkoutsPage() {
         ))}
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
         <form onSubmit={createWorkout} className="rounded-lg border border-[var(--line)] bg-[var(--panel)] p-4 md:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[var(--neon)]">Personalizar</p>
               <h2 className="mt-2 text-2xl font-black text-white">Novo treino</h2>
             </div>
-            <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">
-              {selectedExercises.length} exercícios
-            </span>
+            <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">{selectedExercises.length} exercícios</span>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
+          <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_1fr_180px]">
             <label className="grid gap-2 text-sm font-bold text-white">
               Nome
               <input
@@ -285,6 +347,18 @@ export default function WorkoutsPage() {
                 className="rounded-lg border border-[var(--line)] bg-[var(--panel-2)] px-3 py-3 text-white outline-none transition focus:border-[var(--neon)]"
               />
             </label>
+            <label className="grid gap-2 text-sm font-bold text-white">
+              Dia
+              <select
+                value={dayOfWeek}
+                onChange={(event) => setDayOfWeek(event.target.value)}
+                className="rounded-lg border border-[var(--line)] bg-[var(--panel-2)] px-3 py-3 text-white outline-none transition focus:border-[var(--neon)]"
+              >
+                {dayOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </label>
           </div>
 
           <label className="mt-3 grid gap-2 text-sm font-bold text-white">
@@ -292,7 +366,7 @@ export default function WorkoutsPage() {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Peito, ombros e triceps com foco em progressao de carga."
+              placeholder="Peito, ombros e tríceps com foco em progressão de carga."
               rows={3}
               className="resize-none rounded-lg border border-[var(--line)] bg-[var(--panel-2)] px-3 py-3 text-white outline-none transition focus:border-[var(--neon)]"
             />
@@ -329,7 +403,7 @@ export default function WorkoutsPage() {
           <div className="mt-5 grid gap-3">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[var(--muted)]">Exercícios</h3>
-              <span className="text-xs font-bold text-[var(--muted)]">3x10 · 90s por padrão</span>
+              <span className="text-xs font-bold text-[var(--muted)]">{configuredExercises.length} na sequência</span>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
               {exercises.map((exercise) => {
@@ -353,6 +427,70 @@ export default function WorkoutsPage() {
               })}
             </div>
           </div>
+
+          {selectedExercises.length > 0 ? (
+            <div className="mt-5 grid gap-2">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[var(--muted)]">Metas por exercício</h3>
+              {selectedExercises.map((exercise, index) => {
+                const config = getExerciseConfig(exercise.id);
+                return (
+                  <div key={exercise.id} className="grid gap-3 rounded-lg border border-[var(--line)] bg-[var(--panel-2)] p-3 md:grid-cols-[1fr_repeat(4,82px)] md:items-end">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--neon)] text-xs font-black text-black">{index + 1}</span>
+                      <img src={getMuscleImage(exercise.muscleGroup)} alt="" className="h-10 w-10 rounded-lg bg-[var(--panel)] object-contain" />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-black text-white">{exercise.name}</p>
+                        <p className="text-xs text-[var(--muted)]">{exercise.muscleGroup}</p>
+                      </div>
+                    </div>
+                    <label className="grid gap-1 text-[11px] font-black uppercase text-[var(--muted)]">
+                      Séries
+                      <input
+                        inputMode="numeric"
+                        min={1}
+                        max={20}
+                        value={config.sets}
+                        onChange={(event) => updateExerciseConfig(exercise.id, "sets", Number(event.target.value))}
+                        className="rounded-md border border-[var(--line)] bg-[var(--panel)] px-2 py-2 text-sm text-white outline-none focus:border-[var(--neon)]"
+                      />
+                    </label>
+                    <label className="grid gap-1 text-[11px] font-black uppercase text-[var(--muted)]">
+                      Reps
+                      <input
+                        inputMode="numeric"
+                        min={1}
+                        max={200}
+                        value={config.reps}
+                        onChange={(event) => updateExerciseConfig(exercise.id, "reps", Number(event.target.value))}
+                        className="rounded-md border border-[var(--line)] bg-[var(--panel)] px-2 py-2 text-sm text-white outline-none focus:border-[var(--neon)]"
+                      />
+                    </label>
+                    <label className="grid gap-1 text-[11px] font-black uppercase text-[var(--muted)]">
+                      Desc.
+                      <input
+                        inputMode="numeric"
+                        min={0}
+                        max={1800}
+                        value={config.restSeconds}
+                        onChange={(event) => updateExerciseConfig(exercise.id, "restSeconds", Number(event.target.value))}
+                        className="rounded-md border border-[var(--line)] bg-[var(--panel)] px-2 py-2 text-sm text-white outline-none focus:border-[var(--neon)]"
+                      />
+                    </label>
+                    <label className="grid gap-1 text-[11px] font-black uppercase text-[var(--muted)]">
+                      Kg
+                      <input
+                        inputMode="decimal"
+                        value={config.targetWeight}
+                        onChange={(event) => updateExerciseConfig(exercise.id, "targetWeight", event.target.value)}
+                        placeholder="-"
+                        className="rounded-md border border-[var(--line)] bg-[var(--panel)] px-2 py-2 text-sm text-white outline-none focus:border-[var(--neon)]"
+                      />
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
 
           {status ? (
             <p className={`mt-4 rounded-lg border px-3 py-2 text-sm font-bold ${
@@ -379,18 +517,21 @@ export default function WorkoutsPage() {
           <div className="p-4 md:p-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-[var(--neon)] px-3 py-1 text-xs font-black text-black">{category || "Categoria"}</span>
+              <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">{selectedDayLabel}</span>
               <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">{selectedExercises.length} exercícios</span>
             </div>
             <h2 className="mt-4 text-2xl font-black text-white">{name.trim() || "Prévia do treino"}</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{previewDescription}</p>
             <div className="mt-5 grid gap-2">
-              {selectedExercises.length > 0 ? selectedExercises.map((exercise, index) => (
+              {configuredExercises.length > 0 ? configuredExercises.map(({ exercise, config }, index) => (
                 <div key={exercise.id} className="flex items-center gap-3 rounded-lg bg-[var(--panel-2)] p-3">
                   <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--neon)] text-xs font-black text-black">{index + 1}</span>
                   <img src={getMuscleImage(exercise.muscleGroup)} alt="" className="h-10 w-10 rounded-lg bg-[var(--panel)] object-contain" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-white">{exercise.name}</p>
-                    <p className="text-xs text-[var(--muted)]">3 séries · 10 reps · 90s</p>
+                    <p className="text-xs text-[var(--muted)]">
+                      {config.sets} séries · {config.reps} reps · {config.restSeconds}s{config.targetWeight === null ? "" : ` · ${config.targetWeight}kg`}
+                    </p>
                   </div>
                 </div>
               )) : (
@@ -414,6 +555,7 @@ export default function WorkoutsPage() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-xs font-black uppercase tracking-[0.24em] text-[var(--neon)]">{workout.type}</p>
+                  {typeof workout.dayOfWeek === "number" ? <span className="rounded-full bg-[var(--panel-2)] px-2 py-1 text-[10px] font-black uppercase text-white">{dayLabels[workout.dayOfWeek]}</span> : null}
                   {workout.isLocal ? <span className="rounded-full bg-white px-2 py-1 text-[10px] font-black uppercase text-black">Personalizado</span> : null}
                 </div>
                 <h2 className="mt-2 text-xl font-black text-white">{workout.name}</h2>

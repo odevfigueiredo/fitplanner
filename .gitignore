@@ -20,6 +20,7 @@ dist/
 build/
 out/
 .next/
+.next-fitplanner/
 .turbo/
 .vercel/
 .netlify/
