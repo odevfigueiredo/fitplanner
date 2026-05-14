@@ -1,4 +1,4 @@
-import type { DashboardSummary } from "@fitplanner/shared";
+import { getPrimaryMuscleGroup, scienceRecommendations, type DashboardSummary } from "@fitplanner/shared";
 import { DashboardRepository } from "../repositories/dashboard.repository.js";
 import { startOfMonth, toDateKey } from "../utils/dates.js";
 
@@ -61,6 +61,30 @@ export class DashboardService {
 
     const latestWeight = bodyProgress.at(-1)?.weight ?? null;
     const previousWeight = bodyProgress.length > 1 ? bodyProgress.at(-2)?.weight ?? null : null;
+    const weeklySetMap = new Map<string, number>();
+
+    for (const workout of workouts) {
+      for (const item of workout.exercises) {
+        const group = getPrimaryMuscleGroup(item.exercise.muscleGroup);
+        weeklySetMap.set(group, (weeklySetMap.get(group) ?? 0) + item.sets);
+      }
+    }
+
+    const weeklyMuscleSets = [...weeklySetMap.entries()]
+      .map(([muscleGroup, sets]) => {
+        const status = sets < 6 ? "low" : sets < 10 ? "base" : sets <= 20 ? "optimal" : "high";
+        const message =
+          status === "low"
+            ? "Volume baixo: considere adicionar 2-4 series semanais se este musculo for prioridade."
+            : status === "base"
+              ? "Base util: bom para manutencao ou inicio, mas pode subir para hipertrofia."
+              : status === "optimal"
+                ? "Zona forte: volume semanal alinhado com hipertrofia para a maioria das pessoas."
+                : "Volume alto: acompanhe fadiga, queda de performance e recuperacao.";
+
+        return { muscleGroup, sets, status, message } as const;
+      })
+      .sort((a, b) => b.sets - a.sets);
 
     return {
       weeklyWorkouts: workouts.map((workout) => ({
@@ -95,6 +119,10 @@ export class DashboardService {
         weightChange: latestWeight !== null && previousWeight !== null ? latestWeight - previousWeight : null,
         totalLoggedWorkouts: allCount,
         averageEffort: effortCount > 0 ? Number((effortSum / effortCount).toFixed(1)) : null,
+      },
+      science: {
+        recommendations: [...scienceRecommendations],
+        weeklyMuscleSets,
       },
     };
   }

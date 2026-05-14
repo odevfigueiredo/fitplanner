@@ -41,7 +41,7 @@ export default function BodyProgressScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
+    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-28 pt-5">
       <Card className="gap-3">
         <Text className="text-xl font-black text-white">Novo registro corporal</Text>
         <View className="flex-row gap-3">

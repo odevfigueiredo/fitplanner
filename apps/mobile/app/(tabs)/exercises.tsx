@@ -12,7 +12,12 @@ export default function ExercisesScreen() {
   const { data: exercises } = useResource<Exercise[]>("/exercises", fallbackExercises);
 
   return (
-    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-3 px-4 pb-10 pt-4">
+    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-3 px-4 pb-28 pt-5">
+      <View>
+        <Text className="text-xs font-black uppercase tracking-widest text-neon">Biblioteca</Text>
+        <Text className="text-3xl font-black text-white">Exercicios</Text>
+        <Text className="mt-1 text-sm text-muted">Mais musculos isolados para montar treinos com volume melhor distribuido.</Text>
+      </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-3">
         {muscleGroups.map((group) => (
           <View key={group} className="w-28 overflow-hidden rounded-2xl border border-line bg-panel">

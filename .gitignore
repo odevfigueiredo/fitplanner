@@ -21,10 +21,12 @@ build/
 out/
 .next/
 .next-fitplanner/
+.next-fitplanner-build/
 .turbo/
 .vercel/
 .netlify/
 web-build/
+output/
 
 # Expo and React Native
 .expo/

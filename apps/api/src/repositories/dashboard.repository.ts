@@ -7,7 +7,7 @@ export class DashboardRepository {
   getWorkouts(userId: string) {
     return this.db.workout.findMany({
       where: { userId },
-      include: { exercises: true },
+      include: { exercises: { include: { exercise: true } } },
       orderBy: [{ dayOfWeek: "asc" }, { createdAt: "desc" }],
     });
   }

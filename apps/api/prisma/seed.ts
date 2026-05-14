@@ -1,101 +1,26 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
-import { muscleGroups } from "@fitplanner/shared";
+import { defaultExerciseLibrary } from "@fitplanner/shared";
 
 const prisma = new PrismaClient();
 
-const defaultExercises = [
-  {
-    name: "Bench Press",
-    muscleGroup: "Chest",
-    equipment: "Barbell",
-    instructions: "Keep shoulder blades tight, lower the bar under control, and press explosively.",
-  },
-  {
-    name: "Incline Dumbbell Press",
-    muscleGroup: "Chest",
-    equipment: "Dumbbells",
-    instructions: "Use a controlled range of motion and avoid bouncing at the bottom.",
-  },
-  {
-    name: "Pull-Up",
-    muscleGroup: "Back",
-    equipment: "Pull-up bar",
-    instructions: "Start from a full hang, pull chest toward the bar, and control the descent.",
-  },
-  {
-    name: "Barbell Row",
-    muscleGroup: "Back",
-    equipment: "Barbell",
-    instructions: "Hinge at the hips, brace the core, and row the bar toward the lower ribs.",
-  },
-  {
-    name: "Back Squat",
-    muscleGroup: "Legs",
-    equipment: "Barbell",
-    instructions: "Brace hard, keep knees tracking over toes, and drive through the mid-foot.",
-  },
-  {
-    name: "Romanian Deadlift",
-    muscleGroup: "Legs",
-    equipment: "Barbell",
-    instructions: "Push hips back, keep the spine neutral, and feel the hamstrings lengthen.",
-  },
-  {
-    name: "Overhead Press",
-    muscleGroup: "Shoulders",
-    equipment: "Barbell",
-    instructions: "Squeeze glutes, brace the core, and press the bar overhead in a straight path.",
-  },
-  {
-    name: "Lateral Raise",
-    muscleGroup: "Shoulders",
-    equipment: "Dumbbells",
-    instructions: "Raise elbows to shoulder height with a slight bend and controlled tempo.",
-  },
-  {
-    name: "Dumbbell Curl",
-    muscleGroup: "Biceps",
-    equipment: "Dumbbells",
-    instructions: "Keep elbows pinned, curl with control, and avoid swinging.",
-  },
-  {
-    name: "Triceps Pushdown",
-    muscleGroup: "Triceps",
-    equipment: "Cable",
-    instructions: "Lock elbows by your sides and extend fully at the bottom.",
-  },
-  {
-    name: "Plank",
-    muscleGroup: "Core",
-    equipment: "Bodyweight",
-    instructions: "Keep ribs down, glutes tight, and hold a straight line.",
-  },
-  {
-    name: "Burpee",
-    muscleGroup: "Full Body",
-    equipment: "Bodyweight",
-    instructions: "Move smoothly from plank to jump while keeping the core braced.",
-  },
-] satisfies Array<{
-  name: string;
-  muscleGroup: (typeof muscleGroups)[number];
-  equipment: string;
-  instructions: string;
-}>;
-
-function globalExerciseId(name: string) {
-  return `global-${name.toLowerCase().replaceAll(" ", "-")}`;
-}
+const defaultExercises = defaultExerciseLibrary.map(({ id, name, muscleGroup, equipment, instructions }) => ({
+  id,
+  name,
+  muscleGroup,
+  equipment,
+  instructions,
+}));
 
 async function seedDefaultExercises() {
   for (const exercise of defaultExercises) {
+    const { id, ...data } = exercise;
     await prisma.exercise.upsert({
-      where: { id: globalExerciseId(exercise.name) },
-      update: exercise,
+      where: { id },
+      update: data,
       create: {
-        id: globalExerciseId(exercise.name),
-        ...exercise,
+        id,
+        ...data,
       },
     });
   }
@@ -134,9 +59,9 @@ async function seedDemoUser() {
       exercises: {
         createMany: {
           data: [
-            { exerciseId: globalExerciseId("Bench Press"), sets: 4, reps: 6, restSeconds: 150, targetWeight: 87.5, order: 0 },
-            { exerciseId: globalExerciseId("Overhead Press"), sets: 3, reps: 8, restSeconds: 120, targetWeight: 45, order: 1 },
-            { exerciseId: globalExerciseId("Triceps Pushdown"), sets: 3, reps: 12, restSeconds: 75, targetWeight: 35, order: 2 },
+            { exerciseId: "global-bench-press", sets: 4, reps: 6, restSeconds: 150, targetWeight: 87.5, order: 0 },
+            { exerciseId: "global-overhead-press", sets: 3, reps: 8, restSeconds: 120, targetWeight: 45, order: 1 },
+            { exerciseId: "global-triceps-pushdown", sets: 3, reps: 12, restSeconds: 75, targetWeight: 35, order: 2 },
           ],
         },
       },
@@ -154,9 +79,9 @@ async function seedDemoUser() {
       exercises: {
         createMany: {
           data: [
-            { exerciseId: globalExerciseId("Pull-Up"), sets: 4, reps: 8, restSeconds: 120, targetWeight: null, order: 0 },
-            { exerciseId: globalExerciseId("Barbell Row"), sets: 4, reps: 10, restSeconds: 105, targetWeight: 72.5, order: 1 },
-            { exerciseId: globalExerciseId("Dumbbell Curl"), sets: 3, reps: 12, restSeconds: 75, targetWeight: 24, order: 2 },
+            { exerciseId: "global-pull-up", sets: 4, reps: 8, restSeconds: 120, targetWeight: null, order: 0 },
+            { exerciseId: "global-barbell-row", sets: 4, reps: 10, restSeconds: 105, targetWeight: 72.5, order: 1 },
+            { exerciseId: "global-dumbbell-curl", sets: 3, reps: 12, restSeconds: 75, targetWeight: 24, order: 2 },
           ],
         },
       },
@@ -174,8 +99,8 @@ async function seedDemoUser() {
       exercises: {
         createMany: {
           data: [
-            { exerciseId: globalExerciseId("Burpee"), sets: 5, reps: 12, restSeconds: 45, targetWeight: null, order: 0 },
-            { exerciseId: globalExerciseId("Plank"), sets: 4, reps: 45, restSeconds: 30, targetWeight: null, order: 1 },
+            { exerciseId: "global-burpee", sets: 5, reps: 12, restSeconds: 45, targetWeight: null, order: 0 },
+            { exerciseId: "global-plank", sets: 4, reps: 45, restSeconds: 30, targetWeight: null, order: 1 },
           ],
         },
       },
@@ -214,17 +139,17 @@ async function seedDemoUser() {
             data:
               row.workoutId === push.id
                 ? [
-                    { exerciseId: globalExerciseId("Bench Press"), setsCompleted: 4, repsCompleted: 24, weightUsed: row.bench, perceivedEffort: row.effort },
-                    { exerciseId: globalExerciseId("Overhead Press"), setsCompleted: 3, repsCompleted: 24, weightUsed: 45, perceivedEffort: row.effort },
+                    { exerciseId: "global-bench-press", setsCompleted: 4, repsCompleted: 24, weightUsed: row.bench, perceivedEffort: row.effort },
+                    { exerciseId: "global-overhead-press", setsCompleted: 3, repsCompleted: 24, weightUsed: 45, perceivedEffort: row.effort },
                   ]
                 : row.workoutId === pull.id
                   ? [
-                      { exerciseId: globalExerciseId("Pull-Up"), setsCompleted: 4, repsCompleted: 30, weightUsed: null, perceivedEffort: row.effort },
-                      { exerciseId: globalExerciseId("Barbell Row"), setsCompleted: 4, repsCompleted: 40, weightUsed: 72.5, perceivedEffort: row.effort },
+                      { exerciseId: "global-pull-up", setsCompleted: 4, repsCompleted: 30, weightUsed: null, perceivedEffort: row.effort },
+                      { exerciseId: "global-barbell-row", setsCompleted: 4, repsCompleted: 40, weightUsed: 72.5, perceivedEffort: row.effort },
                     ]
                   : [
-                      { exerciseId: globalExerciseId("Burpee"), setsCompleted: 5, repsCompleted: 60, weightUsed: null, perceivedEffort: row.effort },
-                      { exerciseId: globalExerciseId("Plank"), setsCompleted: 4, repsCompleted: 180, weightUsed: null, perceivedEffort: row.effort - 1 },
+                      { exerciseId: "global-burpee", setsCompleted: 5, repsCompleted: 60, weightUsed: null, perceivedEffort: row.effort },
+                      { exerciseId: "global-plank", setsCompleted: 4, repsCompleted: 180, weightUsed: null, perceivedEffort: row.effort - 1 },
                     ],
           },
         },

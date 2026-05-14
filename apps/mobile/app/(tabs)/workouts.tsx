@@ -21,7 +21,12 @@ export default function WorkoutsScreen() {
   );
 
   return (
-    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
+    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-28 pt-5">
+      <View>
+        <Text className="text-xs font-black uppercase tracking-widest text-neon">Planner</Text>
+        <Text className="text-3xl font-black text-white">Treinos</Text>
+        <Text className="mt-1 text-sm text-muted">Divisoes, categorias e metas de carga prontas para a academia.</Text>
+      </View>
       <Link href="/workouts/create" asChild>
         <PrimaryButton label="Criar treino" />
       </Link>

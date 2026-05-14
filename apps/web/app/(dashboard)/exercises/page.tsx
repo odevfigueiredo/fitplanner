@@ -41,7 +41,7 @@ export default function ExercisesPage() {
         <div className="mt-4 grid gap-3 md:grid-cols-[1fr_220px_auto]">
           <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Nome do exercício" className="h-11 rounded-lg border border-[var(--line)] bg-[var(--panel-2)] px-4 text-white outline-none" />
           <select value={muscleGroup} onChange={(event) => setMuscleGroup(event.target.value)} className="h-11 rounded-lg border border-[var(--line)] bg-[var(--panel-2)] px-4 text-white outline-none">
-            {["Chest", "Back", "Legs", "Shoulders", "Biceps", "Triceps", "Core", "Full Body"].map((group) => (
+            {muscleGroups.map((group) => (
               <option key={group}>{group}</option>
             ))}
           </select>
@@ -67,6 +67,7 @@ export default function ExercisesPage() {
               <th className="px-5 py-3">Exercício</th>
               <th>Grupo muscular</th>
               <th>Equipamento</th>
+              <th>Padrao</th>
               <th>Escopo</th>
             </tr>
           </thead>
@@ -81,6 +82,7 @@ export default function ExercisesPage() {
                 </td>
                 <td>{exercise.muscleGroup}</td>
                 <td>{exercise.equipment ?? "--"}</td>
+                <td>{exercise.pattern ?? "--"}</td>
                 <td className="font-bold text-[var(--neon)]">{exercise.userId ? "Personalizado" : "Global"}</td>
               </tr>
             ))}

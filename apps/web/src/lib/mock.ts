@@ -1,22 +1,22 @@
-import type { DashboardSummary } from "@fitplanner/shared";
+import { defaultExerciseLibrary, scienceRecommendations, type DashboardSummary } from "@fitplanner/shared";
 
 export const fallbackUser = {
   id: "demo-user",
-  name: "Usuário teste",
+  name: "Usuario teste",
   email: "teste@fitplanner.app",
   createdAt: "2026-05-06T00:00:00.000Z",
 };
 
 export const fallbackDashboard: DashboardSummary = {
   weeklyWorkouts: [
-    { id: "push", name: "Força de empurrar", type: "Strength", dayOfWeek: 1, exerciseCount: 5 },
-    { id: "pull", name: "Costas e bíceps", type: "Hypertrophy", dayOfWeek: 3, exerciseCount: 6 },
+    { id: "push", name: "Forca de empurrar", type: "Strength", dayOfWeek: 1, exerciseCount: 5 },
+    { id: "pull", name: "Costas e biceps", type: "Hypertrophy", dayOfWeek: 3, exerciseCount: 6 },
     { id: "legs", name: "Pernas pesadas", type: "Strength", dayOfWeek: 5, exerciseCount: 5 },
     { id: "conditioning", name: "Condicionamento HIIT", type: "HIIT", dayOfWeek: 6, exerciseCount: 4 },
   ],
   lastWorkout: {
     id: "log-1",
-    workoutName: "Força de empurrar",
+    workoutName: "Forca de empurrar",
     date: "2026-05-05T21:00:00.000Z",
     durationMinutes: 58,
   },
@@ -48,41 +48,44 @@ export const fallbackDashboard: DashboardSummary = {
     totalLoggedWorkouts: 42,
     averageEffort: 8.3,
   },
+  science: {
+    recommendations: [...scienceRecommendations],
+    weeklyMuscleSets: [
+      { muscleGroup: "Chest", sets: 7, status: "base", message: "Bom ponto de partida; suba para 10+ series se hipertrofia for prioridade." },
+      { muscleGroup: "Back", sets: 8, status: "base", message: "Distribua puxadas verticais e remadas para dorsais e upper back." },
+      { muscleGroup: "Quads", sets: 4, status: "low", message: "Volume baixo para pernas; adicione agachamento, leg press ou passada." },
+      { muscleGroup: "Core", sets: 8, status: "base", message: "Boa frequencia; alterne anti-extensao, anti-rotacao e obliquos." },
+    ],
+  },
 };
 
-export const fallbackExercises = [
-  { id: "global-bench-press", name: "Supino reto", muscleGroup: "Chest", equipment: "Barra", userId: null },
-  { id: "global-pull-up", name: "Barra fixa", muscleGroup: "Back", equipment: "Barra fixa", userId: null },
-  { id: "global-back-squat", name: "Agachamento livre", muscleGroup: "Legs", equipment: "Barra", userId: null },
-  { id: "global-overhead-press", name: "Desenvolvimento militar", muscleGroup: "Shoulders", equipment: "Barra", userId: null },
-  { id: "global-dumbbell-curl", name: "Rosca direta", muscleGroup: "Biceps", equipment: "Halteres", userId: null },
-  { id: "global-triceps-pushdown", name: "Tríceps polia", muscleGroup: "Triceps", equipment: "Cabo", userId: null },
-  { id: "global-plank", name: "Prancha", muscleGroup: "Core", equipment: "Peso corporal", userId: null },
-  { id: "global-burpee", name: "Burpee", muscleGroup: "Full Body", equipment: "Peso corporal", userId: null },
-];
+export const fallbackExercises = defaultExerciseLibrary.map((exercise) => ({ ...exercise, userId: null }));
+
+const exerciseById = Object.fromEntries(fallbackExercises.map((exercise) => [exercise.id, exercise]));
 
 export const fallbackWorkouts = [
   {
     id: "push",
-    name: "Força de empurrar",
+    name: "Forca de empurrar",
     type: "Strength",
-    description: "Peito, ombros e tríceps com foco em progressão de carga.",
+    description: "Peito, ombros e triceps com foco em progressao de carga.",
     dayOfWeek: 1,
     exercises: [
-      { id: "we1", sets: 4, reps: 6, restSeconds: 150, targetWeight: 87.5, order: 0, exercise: fallbackExercises[0] },
-      { id: "we2", sets: 3, reps: 8, restSeconds: 120, targetWeight: 45, order: 1, exercise: fallbackExercises[3] },
-      { id: "we3", sets: 3, reps: 12, restSeconds: 75, targetWeight: 35, order: 2, exercise: fallbackExercises[5] },
+      { id: "we1", sets: 4, reps: 6, restSeconds: 150, targetWeight: 87.5, order: 0, exercise: exerciseById["global-bench-press"] },
+      { id: "we2", sets: 3, reps: 8, restSeconds: 120, targetWeight: 45, order: 1, exercise: exerciseById["global-overhead-press"] },
+      { id: "we3", sets: 3, reps: 12, restSeconds: 75, targetWeight: 35, order: 2, exercise: exerciseById["global-triceps-pushdown"] },
     ],
   },
   {
     id: "pull",
-    name: "Costas e bíceps",
+    name: "Costas e biceps",
     type: "Hypertrophy",
-    description: "Volume para dorsais, remadas e braços.",
+    description: "Volume para dorsais, remadas e bracos.",
     dayOfWeek: 3,
     exercises: [
-      { id: "we4", sets: 4, reps: 8, restSeconds: 120, targetWeight: null, order: 0, exercise: fallbackExercises[1] },
-      { id: "we5", sets: 3, reps: 10, restSeconds: 90, targetWeight: 24, order: 1, exercise: fallbackExercises[4] },
+      { id: "we4", sets: 4, reps: 8, restSeconds: 120, targetWeight: null, order: 0, exercise: exerciseById["global-pull-up"] },
+      { id: "we5", sets: 4, reps: 10, restSeconds: 105, targetWeight: 72.5, order: 1, exercise: exerciseById["global-barbell-row"] },
+      { id: "we8", sets: 3, reps: 12, restSeconds: 75, targetWeight: 24, order: 2, exercise: exerciseById["global-dumbbell-curl"] },
     ],
   },
   {
@@ -92,8 +95,8 @@ export const fallbackWorkouts = [
     description: "Blocos curtos de alta intensidade para fechar a semana.",
     dayOfWeek: 6,
     exercises: [
-      { id: "we6", sets: 5, reps: 12, restSeconds: 45, targetWeight: null, order: 0, exercise: fallbackExercises[7] },
-      { id: "we7", sets: 4, reps: 45, restSeconds: 30, targetWeight: null, order: 1, exercise: fallbackExercises[6] },
+      { id: "we6", sets: 5, reps: 12, restSeconds: 45, targetWeight: null, order: 0, exercise: exerciseById["global-burpee"] },
+      { id: "we7", sets: 4, reps: 45, restSeconds: 30, targetWeight: null, order: 1, exercise: exerciseById["global-plank"] },
     ],
   },
 ];
@@ -103,8 +106,8 @@ export const fallbackWorkoutLogs = [
     id: "log-1",
     date: "2026-05-05T21:00:00.000Z",
     durationMinutes: 58,
-    notes: "Boa execução e carga subindo.",
-    workout: { name: "Força de empurrar" },
+    notes: "Boa execucao e carga subindo.",
+    workout: { name: "Forca de empurrar" },
     exercises: [
       { id: "log-ex-1", exercise: { name: "Supino reto" }, weightUsed: 87.5, perceivedEffort: 8 },
       { id: "log-ex-2", exercise: { name: "Desenvolvimento militar" }, weightUsed: 45, perceivedEffort: 8 },
@@ -114,7 +117,7 @@ export const fallbackWorkoutLogs = [
     id: "log-2",
     date: "2026-05-03T20:15:00.000Z",
     durationMinutes: 46,
-    notes: "Sessão metabólica rápida.",
+    notes: "Sessao metabolica rapida.",
     workout: { name: "Condicionamento HIIT" },
     exercises: [
       { id: "log-ex-3", exercise: { name: "Burpee" }, weightUsed: null, perceivedEffort: 9 },

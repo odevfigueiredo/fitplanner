@@ -15,7 +15,7 @@ export default function WorkoutHistoryScreen() {
   const { data: logs } = useResource<WorkoutLog[]>("/workout-logs", []);
 
   return (
-    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-3 px-4 pb-10 pt-4">
+    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-3 px-4 pb-28 pt-5">
       {logs.length === 0 ? (
         <EmptyState title="Nenhum histórico ainda" body="Treinos concluídos aparecerão aqui com duração, cargas e esforço." />
       ) : (
