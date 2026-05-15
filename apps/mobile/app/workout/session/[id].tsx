@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
-import { Card, PrimaryButton, TextField } from "@/components/ui";
+import { Card, ExerciseBadge, PrimaryButton, TextField } from "@/components/ui";
 import { useAuth } from "@/context/auth-context";
 import { fallbackWorkouts } from "@/data/mock";
 import { useResource } from "@/hooks/use-resource";
@@ -30,8 +30,8 @@ export default function WorkoutSessionScreen() {
         setsCompleted: item.sets,
         repsCompleted: item.sets * item.reps,
         weightUsed: Number(weight),
-        perceivedEffort: Number(effort)
-      }))
+        perceivedEffort: Number(effort),
+      })),
     };
 
     try {
@@ -44,33 +44,42 @@ export default function WorkoutSessionScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-10 pt-4">
-      <Card className="gap-2">
-        <Text className="text-2xl font-black text-white">{workout.name}</Text>
-        <Text className="text-muted">Modo de registro rápido</Text>
-      </Card>
+    <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-4 px-4 pb-28 pt-5">
+      <View>
+        <Text className="text-xs font-black uppercase tracking-widest text-neon">Sessão</Text>
+        <Text className="text-3xl font-black text-white">{workout.name}</Text>
+        <Text className="mt-1 text-sm text-muted">Registro rápido para terminar sem travar o treino.</Text>
+      </View>
 
-      {workout.exercises.map((item) => (
-        <Card key={item.id} className="gap-2">
-          <View className="flex-row justify-between gap-4">
-            <Text className="flex-1 text-lg font-black text-white">{item.exercise.name}</Text>
-            <Text className="font-black text-neon">{item.sets} x {item.reps}</Text>
+      {workout.exercises.map((item, index) => (
+        <Card key={item.id} className="gap-3">
+          <View className="flex-row items-center gap-3">
+            <Text className="h-8 w-8 rounded-full bg-neon pt-1 text-center text-xs font-black text-black">{index + 1}</Text>
+            <ExerciseBadge label={item.exercise.name} detail={item.exercise.muscleGroup} />
+            <View className="flex-1">
+              <Text className="text-lg font-black text-white">{item.exercise.name}</Text>
+              <Text className="text-sm text-muted">Meta {item.targetWeight ?? "--"}kg</Text>
+            </View>
+            <Text className="font-black text-neon">{item.sets}x{item.reps}</Text>
           </View>
-          <Text className="text-muted">Carga alvo {item.targetWeight ?? "--"}kg</Text>
         </Card>
       ))}
 
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <TextField label="Duração" value={durationMinutes} onChangeText={setDurationMinutes} keyboardType="numeric" />
+      <Card className="gap-3">
+        <Text className="font-black text-white">Resumo final</Text>
+        <View className="flex-row gap-3">
+          <View className="flex-1">
+            <TextField label="Duração" value={durationMinutes} onChangeText={setDurationMinutes} keyboardType="numeric" />
+          </View>
+          <View className="flex-1">
+            <TextField label="Esforço" value={effort} onChangeText={setEffort} keyboardType="numeric" />
+          </View>
         </View>
-        <View className="flex-1">
-          <TextField label="Esforço 1-10" value={effort} onChangeText={setEffort} keyboardType="numeric" />
-        </View>
-      </View>
-      <TextField label="Carga usada" value={weight} onChangeText={setWeight} keyboardType="numeric" />
-      <TextField label="Observações" value={notes} onChangeText={setNotes} multiline />
-      <PrimaryButton label="Finalizar e salvar treino" onPress={finishWorkout} />
+        <TextField label="Carga usada" value={weight} onChangeText={setWeight} keyboardType="numeric" />
+        <TextField label="Observações" value={notes} onChangeText={setNotes} multiline />
+      </Card>
+
+      <PrimaryButton label="Finalizar treino" onPress={finishWorkout} />
     </ScrollView>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import type { DashboardSummary } from "@fitplanner/shared";
+import Link from "next/link";
 import { MetricLineChart } from "@/components/metric-line-chart";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
@@ -40,7 +41,10 @@ export default function DashboardPage() {
 
       <section className="grid min-w-0 gap-4 xl:grid-cols-[1fr_0.9fr]">
         <div className="rounded-lg border border-[var(--line)] bg-[var(--panel)] p-4 md:p-5">
-          <p className="font-black text-white">Último treino realizado</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-black text-white">Último treino</p>
+            <Link href="/history" className="text-sm font-black text-[var(--neon)]">Ver histórico</Link>
+          </div>
           <div className="mt-4 rounded-lg bg-[var(--panel-2)] p-4">
             {data.lastWorkout ? (
               <>

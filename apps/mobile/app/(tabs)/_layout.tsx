@@ -46,10 +46,10 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="index" options={{ title: "Hoje", tabBarIcon: ({ color, focused }) => <Home color={color} fill={focused ? color : "transparent"} size={22} /> }} />
       <Tabs.Screen name="workouts" options={{ title: "Treinos", tabBarIcon: ({ color }) => <Dumbbell color={color} size={22} /> }} />
-      <Tabs.Screen name="exercises" options={{ title: "Exercicios", tabBarIcon: ({ color }) => <Activity color={color} size={22} /> }} />
+      <Tabs.Screen name="exercises" options={{ title: "Exercícios", tabBarIcon: ({ color }) => <Activity color={color} size={22} /> }} />
       <Tabs.Screen name="progress" options={{ title: "Progresso", tabBarIcon: ({ color }) => <LineChart color={color} size={22} /> }} />
       <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color }) => <User color={color} size={22} /> }} />
-      <Tabs.Screen name="history" options={{ title: "Historico", href: null, tabBarIcon: ({ color }) => <History color={color} size={22} /> }} />
+      <Tabs.Screen name="history" options={{ title: "Histórico", href: null, tabBarIcon: ({ color }) => <History color={color} size={22} /> }} />
     </Tabs>
   );
 }
