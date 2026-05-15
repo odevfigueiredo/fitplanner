@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { Activity, Dumbbell, History, LayoutDashboard, LineChart, LogOut, Settings } from "lucide-react";
+import { Activity, Dumbbell, LayoutDashboard, LineChart, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { clearStoredToken } from "@/lib/api";
@@ -10,8 +10,7 @@ const items = [
   { href: "/dashboard", label: "Painel", shortLabel: "Painel", icon: LayoutDashboard },
   { href: "/workouts", label: "Treinos", shortLabel: "Treinos", icon: Dumbbell },
   { href: "/exercises", label: "Exercícios", shortLabel: "Exerc.", icon: Activity },
-  { href: "/history", label: "Histórico", shortLabel: "Hist.", icon: History },
-  { href: "/body-progress", label: "Progresso corporal", shortLabel: "Corpo", icon: LineChart },
+  { href: "/body-progress", label: "Corpo", shortLabel: "Corpo", icon: LineChart },
   { href: "/settings", label: "Ajustes", shortLabel: "Ajustes", icon: Settings },
 ];
 
@@ -27,16 +26,16 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="hidden w-72 min-w-72 flex-col justify-between border-r border-[var(--line)] bg-[#0c100f] p-4 lg:flex lg:min-h-screen">
-        <div className="grid gap-8">
+      <aside className="hidden w-60 min-w-60 flex-col justify-between border-r border-[var(--line)] bg-[#0c100f] p-3 lg:flex lg:min-h-screen">
+        <div className="grid gap-6">
           <div className="flex items-center gap-3">
-            <img src="/assets/fitplanner-mark.png" alt="" className="h-12 w-12 rounded-lg border border-[var(--line)] object-cover" />
+            <img src="/assets/fitplanner-mark.png" alt="" className="h-10 w-10 rounded-lg border border-[var(--line)] object-cover" />
             <div>
-              <p className="text-2xl font-black text-white">FitPlanner</p>
-              <p className="text-sm text-[var(--muted)]">Painel de treinos</p>
+              <p className="text-xl font-black text-white">FitPlanner</p>
+              <p className="text-xs text-[var(--muted)]">Treino e progresso</p>
             </div>
           </div>
-          <nav className="grid gap-2">
+          <nav className="grid gap-1">
             {items.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href;
@@ -45,7 +44,7 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-bold transition",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold transition",
                     active ? "bg-[var(--neon)] text-black" : "text-[var(--muted)] hover:bg-[var(--panel)] hover:text-white",
                   )}
                 >
@@ -56,7 +55,7 @@ export function Sidebar() {
             })}
           </nav>
         </div>
-        <button onClick={logout} className="w-full rounded-lg border border-[var(--line)] px-4 py-3 text-sm font-bold text-white hover:border-[var(--neon)]">
+        <button onClick={logout} className="w-full rounded-lg border border-[var(--line)] px-4 py-2.5 text-sm font-bold text-white hover:border-[var(--neon)]">
           Sair
         </button>
       </aside>
@@ -79,7 +78,7 @@ export function Sidebar() {
       </header>
 
       <nav className="fixed inset-x-0 bottom-0 z-50 w-screen max-w-[100vw] border-t border-[var(--line)] bg-[#0c100f]/95 px-2 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur lg:hidden">
-        <div className="grid grid-cols-6 gap-1">
+        <div className="grid grid-cols-5 gap-1">
           {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;

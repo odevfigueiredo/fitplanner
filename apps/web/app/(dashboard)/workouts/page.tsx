@@ -2,9 +2,10 @@
 
 import { workoutTypes } from "@fitplanner/shared";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { ExerciseBadge } from "@/components/exercise-badge";
 import { PageHeader } from "@/components/page-header";
 import { apiFetch, getStoredToken } from "@/lib/api";
-import { getMuscleImage, getTrainingTypeImage } from "@/lib/assets";
+import { getTrainingTypeImage } from "@/lib/assets";
 import { fallbackExercises, fallbackWorkouts } from "@/lib/mock";
 import { useResource } from "@/lib/use-resource";
 
@@ -297,23 +298,19 @@ export default function WorkoutsPage() {
     <div className="grid gap-5 md:gap-6">
       <PageHeader title="Treinos" subtitle="Crie divisões, categorias, dias e metas próprias para planejar a semana com clareza." />
 
-      <section className="no-scrollbar grid grid-flow-col auto-cols-[220px] gap-3 overflow-x-auto md:grid-flow-row md:grid-cols-3 md:overflow-visible xl:grid-cols-5">
+      <section className="no-scrollbar flex gap-2 overflow-x-auto rounded-lg border border-[var(--line)] bg-[var(--panel)] p-3">
         {categories.map((type) => (
           <button
             key={type}
             type="button"
             onClick={() => setCategory(type)}
-            className={`overflow-hidden rounded-lg border text-left transition hover:-translate-y-0.5 ${
-              category === type ? "border-[var(--neon)] bg-[rgba(34,197,94,0.1)]" : "border-[var(--line)] bg-[var(--panel)]"
+            className={`flex shrink-0 items-center gap-2 rounded-full px-3 py-2 text-xs font-black transition ${
+              category === type ? "bg-[var(--neon)] text-black" : "bg-[var(--panel-2)] text-[var(--muted)] hover:text-white"
             }`}
           >
-            <img src={getTrainingTypeImage(type)} alt="" className="aspect-video w-full object-cover" />
-            <div className="flex items-center justify-between gap-2 p-3">
-              <p className="text-sm font-black text-white">{type}</p>
-              {!defaultWorkoutTypes.has(type) ? (
-                <span className="rounded-full bg-[var(--panel-2)] px-2 py-1 text-[10px] font-black uppercase text-[var(--neon)]">Custom</span>
-              ) : null}
-            </div>
+            <span className="h-2 w-2 rounded-full bg-current opacity-80" />
+            {type}
+            {!defaultWorkoutTypes.has(type) ? <span className="opacity-70">Custom</span> : null}
           </button>
         ))}
       </section>
@@ -417,7 +414,7 @@ export default function WorkoutsPage() {
                       selected ? "border-[var(--neon)] bg-[rgba(34,197,94,0.1)]" : "border-[var(--line)] bg-[var(--panel-2)] hover:border-[rgba(255,255,255,0.22)]"
                     }`}
                   >
-                    <img src={getMuscleImage(exercise.muscleGroup)} alt="" className="h-11 w-11 rounded-lg bg-[var(--panel)] object-contain" />
+                    <ExerciseBadge label={exercise.name} detail={exercise.muscleGroup} />
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-black text-white">{exercise.name}</span>
                       <span className="block truncate text-xs text-[var(--muted)]">{exercise.muscleGroup} · {exercise.equipment ?? "Sem equipamento"}</span>
@@ -437,7 +434,7 @@ export default function WorkoutsPage() {
                   <div key={exercise.id} className="grid gap-3 rounded-lg border border-[var(--line)] bg-[var(--panel-2)] p-3 md:grid-cols-[1fr_repeat(4,82px)] md:items-end">
                     <div className="flex min-w-0 items-center gap-3">
                       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--neon)] text-xs font-black text-black">{index + 1}</span>
-                      <img src={getMuscleImage(exercise.muscleGroup)} alt="" className="h-10 w-10 rounded-lg bg-[var(--panel)] object-contain" />
+                      <ExerciseBadge label={exercise.name} detail={exercise.muscleGroup} />
                       <div className="min-w-0">
                         <p className="truncate text-sm font-black text-white">{exercise.name}</p>
                         <p className="text-xs text-[var(--muted)]">{exercise.muscleGroup}</p>
@@ -526,7 +523,7 @@ export default function WorkoutsPage() {
               {configuredExercises.length > 0 ? configuredExercises.map(({ exercise, config }, index) => (
                 <div key={exercise.id} className="flex items-center gap-3 rounded-lg bg-[var(--panel-2)] p-3">
                   <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--neon)] text-xs font-black text-black">{index + 1}</span>
-                  <img src={getMuscleImage(exercise.muscleGroup)} alt="" className="h-10 w-10 rounded-lg bg-[var(--panel)] object-contain" />
+                  <ExerciseBadge label={exercise.name} detail={exercise.muscleGroup} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-white">{exercise.name}</p>
                     <p className="text-xs text-[var(--muted)]">
@@ -566,7 +563,7 @@ export default function WorkoutsPage() {
             <div className="grid gap-2 border-t border-[var(--line)] p-4 md:hidden">
               {workout.exercises.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 rounded-lg bg-[var(--panel-2)] p-3">
-                  <img src={getMuscleImage(item.exercise.muscleGroup)} alt="" className="h-11 w-11 rounded-lg bg-[var(--panel)] object-contain" />
+                  <ExerciseBadge label={item.exercise.name} detail={item.exercise.muscleGroup} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-white">{item.exercise.name}</p>
                     <p className="text-xs text-[var(--muted)]">
@@ -593,7 +590,7 @@ export default function WorkoutsPage() {
                     <tr key={item.id} className="border-t border-[var(--line)]">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <img src={getMuscleImage(item.exercise.muscleGroup)} alt="" className="h-10 w-10 rounded-lg bg-[var(--panel-2)] object-contain" />
+                          <ExerciseBadge label={item.exercise.name} detail={item.exercise.muscleGroup} />
                           <span className="font-bold text-white">{item.exercise.name}</span>
                         </div>
                       </td>

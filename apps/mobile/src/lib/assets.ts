@@ -17,10 +17,10 @@ const trainingTypeImages = {
   Cardio: require("../../assets/images/training/cardio.png"),
   Mobility: require("../../assets/images/training/mobility.png"),
   HIIT: require("../../assets/images/training/hiit.png"),
-  Endurance: require("../../assets/images/training/cardio.png"),
-  Power: require("../../assets/images/training/strength.png"),
-  Recovery: require("../../assets/images/training/mobility.png"),
-  Home: require("../../assets/images/training/hiit.png"),
+  Endurance: require("../../assets/images/training/endurance.png"),
+  Power: require("../../assets/images/training/power.png"),
+  Recovery: require("../../assets/images/training/recovery.png"),
+  Home: require("../../assets/images/training/home.png"),
 } satisfies Record<DefaultWorkoutType, number>;
 
 export function getMuscleImage(group?: string | null) {

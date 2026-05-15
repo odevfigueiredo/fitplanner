@@ -9,6 +9,22 @@ import {
   View
 } from "react-native";
 
+const badgeAccents = ["#36f58a", "#8cffd2", "#d6ff65", "#74a7ff", "#f6d365", "#ff8f70"];
+
+function hashText(value: string) {
+  return [...value].reduce((hash, char) => hash + char.charCodeAt(0), 0);
+}
+
+function initials(value: string) {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
 export function Screen({ children }: PropsWithChildren) {
   return <View className="flex-1 bg-ink px-4 py-5">{children}</View>;
 }
@@ -24,6 +40,18 @@ export function MetricCard({ label, value, detail }: { label: string; value: str
       <Text className="text-3xl font-black text-white">{value}</Text>
       {detail ? <Text className="text-sm text-muted">{detail}</Text> : null}
     </Card>
+  );
+}
+
+export function ExerciseBadge({ label, detail }: { label: string; detail?: string | null }) {
+  const accent = badgeAccents[hashText(`${label}${detail ?? ""}`) % badgeAccents.length];
+
+  return (
+    <View className="h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-line bg-panel2">
+      <View className="h-8 w-8 items-center justify-center rounded-xl" style={{ backgroundColor: accent }}>
+        <Text className="text-xs font-black text-black">{initials(label)}</Text>
+      </View>
+    </View>
   );
 }
 

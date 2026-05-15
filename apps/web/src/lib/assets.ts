@@ -17,10 +17,10 @@ export const trainingTypeImageMap: Record<DefaultWorkoutType, string> = {
   Cardio: "/assets/training/cardio.png",
   Mobility: "/assets/training/mobility.png",
   HIIT: "/assets/training/hiit.png",
-  Endurance: "/assets/training/cardio.png",
-  Power: "/assets/training/strength.png",
-  Recovery: "/assets/training/mobility.png",
-  Home: "/assets/training/hiit.png",
+  Endurance: "/assets/training/endurance.png",
+  Power: "/assets/training/power.png",
+  Recovery: "/assets/training/recovery.png",
+  Home: "/assets/training/home.png",
 };
 
 export function getMuscleImage(group?: string | null) {
