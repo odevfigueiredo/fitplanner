@@ -1,6 +1,6 @@
 "use client";
 
-import type { DashboardSummary } from "@fitplanner/shared";
+import { guideSteps, type DashboardSummary } from "@fitplanner/shared";
 import Link from "next/link";
 import { MetricLineChart } from "@/components/metric-line-chart";
 import { MetricCard } from "@/components/metric-card";
@@ -22,6 +22,10 @@ export default function DashboardPage() {
       label: new Date(item.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
       value: item.weightUsed ?? 0,
     }));
+  const guideFocus =
+    data.science.weeklyMuscleSets.find((item) => item.status === "low" || item.status === "high")?.message ??
+    data.science.recommendations[0]?.action ??
+    "Crie um treino simples, registre a sessão e revise seu progresso depois.";
 
   return (
     <div className="grid gap-5 md:gap-6">
@@ -73,28 +77,34 @@ export default function DashboardPage() {
 
       <section className="grid min-w-0 gap-4 xl:grid-cols-[1fr_0.9fr]">
         <div className="rounded-lg border border-[var(--line)] bg-[var(--panel)] p-4 md:p-5">
-          <img src="/assets/science-coach.png" alt="" className="mb-4 aspect-[16/7] w-full rounded-lg object-cover" />
+          <img src="/assets/guide-coach.png" alt="" className="mb-4 aspect-[16/7] w-full rounded-lg object-cover" />
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.24em] text-[var(--neon)]">Base cientifica</p>
-              <h2 className="mt-2 text-xl font-black text-white">Recomendacoes do FitPlanner</h2>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[var(--neon)]">Guia rápido</p>
+              <h2 className="mt-2 text-xl font-black text-white">O que fazer agora</h2>
             </div>
-            <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">ACSM + meta-analises</span>
+            <span className="rounded-full bg-[var(--panel-2)] px-3 py-1 text-xs font-black text-white">3 passos</span>
           </div>
-          <div className="mt-4 grid gap-3">
-            {data.science.recommendations.slice(0, 4).map((item) => (
-              <article key={item.id} className="rounded-lg bg-[var(--panel-2)] p-3">
-                <p className="font-black text-white">{item.title}</p>
-                <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{item.summary}</p>
-                <p className="mt-2 text-sm font-bold text-[var(--neon)]">{item.action}</p>
+          <div className="mt-4 grid gap-2">
+            {guideSteps.map((item, index) => (
+              <article key={item.id} className="flex gap-3 rounded-lg bg-[var(--panel-2)] p-3">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--neon)] text-xs font-black text-black">{index + 1}</span>
+                <div>
+                  <p className="font-black text-white">{item.title}</p>
+                  <p className="mt-1 text-sm leading-5 text-[var(--muted)]">{item.action}</p>
+                </div>
               </article>
             ))}
+          </div>
+          <div className="mt-3 rounded-lg border border-[rgba(54,245,138,0.25)] bg-[rgba(54,245,138,0.08)] p-3">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[var(--neon)]">Foco</p>
+            <p className="mt-1 text-sm leading-6 text-white">{guideFocus}</p>
           </div>
         </div>
 
         <div className="rounded-lg border border-[var(--line)] bg-[var(--panel)] p-4 md:p-5">
           <p className="font-black text-white">Volume semanal por grupo</p>
-          <p className="mt-1 text-sm text-[var(--muted)]">Soma de series planejadas nos treinos da semana.</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">Soma de séries planejadas nos treinos da semana.</p>
           <div className="mt-4 grid gap-3">
             {data.science.weeklyMuscleSets.length > 0 ? data.science.weeklyMuscleSets.slice(0, 8).map((item) => {
               const width = Math.min(100, Math.max(8, (item.sets / 20) * 100));
@@ -103,7 +113,7 @@ export default function DashboardPage() {
                 <div key={item.muscleGroup} className="rounded-lg bg-[var(--panel-2)] p-3">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-bold text-white">{item.muscleGroup}</span>
-                    <span className="text-sm font-black text-[var(--neon)]">{item.sets} series</span>
+                    <span className="text-sm font-black text-[var(--neon)]">{item.sets} séries</span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/30">
                     <div className={`h-full rounded-full ${tone}`} style={{ width: `${width}%` }} />
@@ -113,7 +123,7 @@ export default function DashboardPage() {
               );
             }) : (
               <p className="rounded-lg border border-dashed border-[var(--line)] p-4 text-sm text-[var(--muted)]">
-                Crie treinos com exercicios para receber analise de volume.
+                Crie treinos com exercícios para receber análise de volume.
               </p>
             )}
           </div>

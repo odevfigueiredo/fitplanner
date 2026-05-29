@@ -2,21 +2,21 @@ import { defaultExerciseLibrary, scienceRecommendations, type DashboardSummary }
 
 export const fallbackUser = {
   id: "demo-user",
-  name: "Usuario teste",
+  name: "Usuário teste",
   email: "teste@fitplanner.app",
   createdAt: "2026-05-06T00:00:00.000Z",
 };
 
 export const fallbackDashboard: DashboardSummary = {
   weeklyWorkouts: [
-    { id: "push", name: "Forca de empurrar", type: "Strength", dayOfWeek: 1, exerciseCount: 5 },
-    { id: "pull", name: "Costas e biceps", type: "Hypertrophy", dayOfWeek: 3, exerciseCount: 6 },
+    { id: "push", name: "Força de empurrar", type: "Strength", dayOfWeek: 1, exerciseCount: 5 },
+    { id: "pull", name: "Costas e bíceps", type: "Hypertrophy", dayOfWeek: 3, exerciseCount: 6 },
     { id: "legs", name: "Pernas pesadas", type: "Strength", dayOfWeek: 5, exerciseCount: 5 },
     { id: "conditioning", name: "Condicionamento HIIT", type: "HIIT", dayOfWeek: 6, exerciseCount: 4 },
   ],
   lastWorkout: {
     id: "last",
-    workoutName: "Forca de empurrar",
+    workoutName: "Força de empurrar",
     date: "2026-05-05T21:00:00.000Z",
     durationMinutes: 58,
   },
@@ -51,10 +51,10 @@ export const fallbackDashboard: DashboardSummary = {
   science: {
     recommendations: [...scienceRecommendations],
     weeklyMuscleSets: [
-      { muscleGroup: "Chest", sets: 7, status: "base", message: "Bom ponto de partida; suba para 10+ series se hipertrofia for prioridade." },
+      { muscleGroup: "Chest", sets: 7, status: "base", message: "Bom ponto de partida; suba para 10+ séries se hipertrofia for prioridade." },
       { muscleGroup: "Back", sets: 8, status: "base", message: "Distribua puxadas verticais e remadas para dorsais e upper back." },
       { muscleGroup: "Quads", sets: 4, status: "low", message: "Volume baixo para pernas; adicione agachamento, leg press ou passada." },
-      { muscleGroup: "Core", sets: 8, status: "base", message: "Boa frequencia; alterne anti-extensao, anti-rotacao e obliquos." },
+      { muscleGroup: "Core", sets: 8, status: "base", message: "Boa frequência; alterne anti-extensão, anti-rotação e oblíquos." },
     ],
   },
 };
@@ -66,9 +66,9 @@ const exerciseById = Object.fromEntries(fallbackExercises.map((exercise) => [exe
 export const fallbackWorkouts = [
   {
     id: "push",
-    name: "Forca de empurrar",
+    name: "Força de empurrar",
     type: "Strength",
-    description: "Peito, ombros e triceps com foco em carga.",
+    description: "Peito, ombros e tríceps com foco em carga.",
     dayOfWeek: 1,
     exercises: [
       { id: "we1", sets: 4, reps: 6, restSeconds: 150, targetWeight: 87.5, order: 0, exercise: exerciseById["global-bench-press"] },
@@ -77,9 +77,9 @@ export const fallbackWorkouts = [
   },
   {
     id: "pull",
-    name: "Costas e biceps",
+    name: "Costas e bíceps",
     type: "Hypertrophy",
-    description: "Volume para dorsais e bracos.",
+    description: "Volume para dorsais e braços.",
     dayOfWeek: 3,
     exercises: [
       { id: "we3", sets: 4, reps: 8, restSeconds: 120, targetWeight: null, order: 0, exercise: exerciseById["global-pull-up"] },

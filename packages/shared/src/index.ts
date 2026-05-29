@@ -184,35 +184,56 @@ export const scienceRecommendations = [
   },
 ] as const;
 
+export const guideSteps = [
+  {
+    id: "plan",
+    title: "Planeje",
+    summary: "Escolha o treino da semana e confira se os principais grupos musculares aparecem no plano.",
+    action: "Abra Treinos e deixe o próximo treino pronto antes da academia.",
+  },
+  {
+    id: "train",
+    title: "Treine",
+    summary: "Durante a sessão, registre carga, reps e esforço percebido sem sair do fluxo.",
+    action: "Use Iniciar treino e salve a sessão ao finalizar.",
+  },
+  {
+    id: "adjust",
+    title: "Ajuste",
+    summary: "Depois do treino, use volume semanal, peso corporal e carga para decidir o próximo ajuste.",
+    action: "Se um grupo estiver baixo, adicione poucas séries; se estiver alto, monitore fadiga.",
+  },
+] as const;
+
 export const defaultExerciseLibrary = [
   { id: "global-bench-press", name: "Supino reto", muscleGroup: "Mid Chest", equipment: "Barra", instructions: "Escapulas firmes, barra descendo com controle e subida forte sem perder a ponte.", pattern: "Horizontal push" },
   { id: "global-incline-dumbbell-press", name: "Supino inclinado com halteres", muscleGroup: "Upper Chest", equipment: "Halteres", instructions: "Use amplitude controlada e mantenha o peito alto durante toda a serie.", pattern: "Incline push" },
   { id: "global-cable-fly", name: "Crucifixo no cabo", muscleGroup: "Mid Chest", equipment: "Cabo", instructions: "Abrace a linha do peito sem deixar o ombro dominar o movimento.", pattern: "Isolation" },
-  { id: "global-push-up", name: "Flexao de bracos", muscleGroup: "Chest", equipment: "Peso corporal", instructions: "Corpo em linha, cotovelos controlados e peito aproximando do solo.", pattern: "Horizontal push" },
+  { id: "global-push-up", name: "Flexão de braços", muscleGroup: "Chest", equipment: "Peso corporal", instructions: "Corpo em linha, cotovelos controlados e peito aproximando do solo.", pattern: "Horizontal push" },
   { id: "global-pull-up", name: "Barra fixa", muscleGroup: "Lats", equipment: "Barra fixa", instructions: "Comece em suspensao completa, puxe o peito para a barra e controle a descida.", pattern: "Vertical pull" },
   { id: "global-lat-pulldown", name: "Puxada alta", muscleGroup: "Lats", equipment: "Maquina/cabo", instructions: "Puxe os cotovelos para baixo sem jogar o tronco para tras.", pattern: "Vertical pull" },
   { id: "global-barbell-row", name: "Remada curvada", muscleGroup: "Upper Back", equipment: "Barra", instructions: "Tronco firme, quadril em hinge e barra indo em direcao as costelas.", pattern: "Horizontal pull" },
   { id: "global-face-pull", name: "Face pull", muscleGroup: "Rear Delts", equipment: "Cabo", instructions: "Puxe a corda para a linha dos olhos abrindo os cotovelos.", pattern: "Shoulder health" },
-  { id: "global-back-squat", name: "Agachamento livre", muscleGroup: "Quads", equipment: "Barra", instructions: "Trave o core, joelhos acompanhando os pes e suba empurrando o chao.", pattern: "Squat" },
+  { id: "global-back-squat", name: "Agachamento livre", muscleGroup: "Quads", equipment: "Barra", instructions: "Trave o core, joelhos acompanhando os pés e suba empurrando o chão.", pattern: "Squat" },
   { id: "global-leg-press", name: "Leg press", muscleGroup: "Quads", equipment: "Maquina", instructions: "Controle a descida, mantenha quadril apoiado e empurre sem travar agressivamente os joelhos.", pattern: "Squat" },
   { id: "global-romanian-deadlift", name: "Levantamento romeno", muscleGroup: "Hamstrings", equipment: "Barra", instructions: "Quadril para tras, coluna neutra e tensao nos posteriores.", pattern: "Hinge" },
-  { id: "global-hip-thrust", name: "Hip thrust", muscleGroup: "Glutes", equipment: "Barra", instructions: "Queixo levemente recolhido, retroversao no topo e pausa curta contraindo gluteos.", pattern: "Hip extension" },
+  { id: "global-hip-thrust", name: "Hip thrust", muscleGroup: "Glutes", equipment: "Barra", instructions: "Queixo levemente recolhido, retroversão no topo e pausa curta contraindo glúteos.", pattern: "Hip extension" },
   { id: "global-calf-raise", name: "Elevacao de panturrilha", muscleGroup: "Calves", equipment: "Maquina/halteres", instructions: "Suba no maximo, pause e desca ate alongar a panturrilha.", pattern: "Isolation" },
-  { id: "global-overhead-press", name: "Desenvolvimento militar", muscleGroup: "Front Delts", equipment: "Barra", instructions: "Gluteos e core firmes, barra subindo em linha reta acima da cabeca.", pattern: "Vertical push" },
+  { id: "global-overhead-press", name: "Desenvolvimento militar", muscleGroup: "Front Delts", equipment: "Barra", instructions: "Glúteos e core firmes, barra subindo em linha reta acima da cabeça.", pattern: "Vertical push" },
   { id: "global-lateral-raise", name: "Elevacao lateral", muscleGroup: "Side Delts", equipment: "Halteres", instructions: "Suba ate a linha do ombro sem encolher o trapezio.", pattern: "Isolation" },
-  { id: "global-rear-delt-fly", name: "Crucifixo inverso", muscleGroup: "Rear Delts", equipment: "Halteres/maquina", instructions: "Abra os bracos com controle mantendo o tronco estavel.", pattern: "Isolation" },
+  { id: "global-rear-delt-fly", name: "Crucifixo inverso", muscleGroup: "Rear Delts", equipment: "Halteres/máquina", instructions: "Abra os braços com controle mantendo o tronco estável.", pattern: "Isolation" },
   { id: "global-dumbbell-curl", name: "Rosca direta", muscleGroup: "Biceps", equipment: "Halteres", instructions: "Cotovelos fixos, subida sem balanço e descida controlada.", pattern: "Isolation" },
   { id: "global-hammer-curl", name: "Rosca martelo", muscleGroup: "Forearms", equipment: "Halteres", instructions: "Pegada neutra, punhos firmes e amplitude completa.", pattern: "Isolation" },
-  { id: "global-triceps-pushdown", name: "Triceps polia", muscleGroup: "Triceps", equipment: "Cabo", instructions: "Cotovelos junto ao tronco e extensao completa no fim.", pattern: "Isolation" },
-  { id: "global-overhead-triceps-extension", name: "Triceps acima da cabeca", muscleGroup: "Triceps", equipment: "Cabo/halter", instructions: "Mantenha cotovelos altos e controle o alongamento.", pattern: "Isolation" },
-  { id: "global-plank", name: "Prancha", muscleGroup: "Abs", equipment: "Peso corporal", instructions: "Costelas baixas, gluteos firmes e linha reta da cabeca aos pes.", pattern: "Core anti-extension" },
+  { id: "global-triceps-pushdown", name: "Tríceps na polia", muscleGroup: "Triceps", equipment: "Cabo", instructions: "Cotovelos junto ao tronco e extensão completa no fim.", pattern: "Isolation" },
+  { id: "global-overhead-triceps-extension", name: "Tríceps acima da cabeça", muscleGroup: "Triceps", equipment: "Cabo/halter", instructions: "Mantenha cotovelos altos e controle o alongamento.", pattern: "Isolation" },
+  { id: "global-plank", name: "Prancha", muscleGroup: "Abs", equipment: "Peso corporal", instructions: "Costelas baixas, glúteos firmes e linha reta da cabeça aos pés.", pattern: "Core anti-extension" },
   { id: "global-dead-bug", name: "Dead bug", muscleGroup: "Abs", equipment: "Peso corporal", instructions: "Lombar estavel no solo enquanto alterna braco e perna.", pattern: "Core control" },
   { id: "global-side-plank", name: "Prancha lateral", muscleGroup: "Obliques", equipment: "Peso corporal", instructions: "Quadril alto e tronco alinhado sem girar para frente.", pattern: "Core anti-lateral-flexion" },
   { id: "global-bird-dog", name: "Bird dog", muscleGroup: "Lower Back", equipment: "Peso corporal", instructions: "Estenda membros opostos sem rodar a pelve.", pattern: "Core stability" },
   { id: "global-burpee", name: "Burpee", muscleGroup: "Full Body", equipment: "Peso corporal", instructions: "Transicoes fluidas, core firme e aterrissagem suave.", pattern: "Conditioning" },
-  { id: "global-kettlebell-swing", name: "Kettlebell swing", muscleGroup: "Glutes", equipment: "Kettlebell", instructions: "Movimento vem do quadril, nao de agachamento; finalize com gluteos contraidos.", pattern: "Power hinge" },
+  { id: "global-kettlebell-swing", name: "Kettlebell swing", muscleGroup: "Glutes", equipment: "Kettlebell", instructions: "Movimento vem do quadril, não de agachamento; finalize com glúteos contraídos.", pattern: "Power hinge" },
   { id: "global-jump-rope", name: "Corda", muscleGroup: "Calves", equipment: "Corda", instructions: "Saltos baixos, punhos girando a corda e ritmo respiratorio constante.", pattern: "Cardio" },
-  { id: "global-mountain-climber", name: "Mountain climber", muscleGroup: "Full Body", equipment: "Peso corporal", instructions: "Ombros sobre maos e joelhos alternando rapido sem perder o core.", pattern: "Conditioning" },
+  { id: "global-mountain-climber", name: "Mountain climber", muscleGroup: "Full Body", equipment: "Peso corporal", instructions: "Ombros sobre mãos e joelhos alternando rápido sem perder o core.", pattern: "Conditioning" },
 ] as const;
 
 export const registerSchema = z.object({
@@ -297,6 +318,7 @@ export type DefaultWorkoutType = (typeof workoutTypes)[number];
 export type WorkoutType = DefaultWorkoutType | (string & {});
 export type ScienceSource = (typeof scienceSources)[number];
 export type ScienceRecommendation = (typeof scienceRecommendations)[number];
+export type GuideStep = (typeof guideSteps)[number];
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ExerciseCreateInput = z.infer<typeof exerciseCreateSchema>;

@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
-import { CalendarDays, ChevronRight, Flame, Sparkles } from "lucide-react-native";
+import { CalendarDays, Flame, Sparkles } from "lucide-react-native";
 import { Image, ScrollView, Text, View } from "react-native";
-import type { DashboardSummary } from "@fitplanner/shared";
+import { guideSteps, type DashboardSummary } from "@fitplanner/shared";
 import { LineChart } from "@/components/line-chart";
 import { Card, MetricCard, PrimaryButton, SecondaryButton } from "@/components/ui";
 import { fallbackDashboard } from "@/data/mock";
@@ -9,7 +9,7 @@ import { getTrainingTypeImage } from "@/lib/assets";
 import { useResource } from "@/hooks/use-resource";
 
 const dayLabels = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
-const scienceCoachImage = require("../../assets/images/science-coach.png");
+const guideCoachImage = require("../../assets/images/guide-coach.png");
 
 export default function HomeDashboardScreen() {
   const { data: dashboard } = useResource<DashboardSummary>("/dashboard/summary", fallbackDashboard);
@@ -25,6 +25,10 @@ export default function HomeDashboardScreen() {
       label: new Date(item.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }),
       value: item.weightUsed ?? 0,
     }));
+  const guideFocus =
+    dashboard.science.weeklyMuscleSets.find((item) => item.status === "low" || item.status === "high")?.message ??
+    dashboard.science.recommendations[0]?.action ??
+    "Escolha um treino, registre a sessão e revise o progresso depois.";
 
   return (
     <ScrollView className="flex-1 bg-ink" contentContainerClassName="gap-5 px-4 pb-28 pt-5">
@@ -47,45 +51,52 @@ export default function HomeDashboardScreen() {
               {typeof nextWorkout?.dayOfWeek === "number" ? dayLabels[nextWorkout.dayOfWeek] : "Plano livre"}
             </Text>
           </View>
-          <Text className="text-2xl font-black text-white">{nextWorkout?.name ?? "Monte seu proximo treino"}</Text>
+          <Text className="text-2xl font-black text-white">{nextWorkout?.name ?? "Monte seu próximo treino"}</Text>
           <Text className="text-sm leading-5 text-muted">
-            {nextWorkout ? `${nextWorkout.exerciseCount} exercicios no plano. Ajuste carga, descanso e reps antes de iniciar.` : "Crie uma divisao de treino personalizada."}
+            {nextWorkout ? `${nextWorkout.exerciseCount} exercícios no plano. Ajuste carga, descanso e reps antes de iniciar.` : "Crie uma divisão de treino personalizada."}
           </Text>
           <View className="flex-row gap-3">
             <Link href="/workouts" asChild>
-              <PrimaryButton label="Comecar" className="flex-1" />
+              <PrimaryButton label="Começar" className="flex-1" />
             </Link>
             <Link href="/history" asChild>
-              <SecondaryButton label="Historico" className="flex-1" />
+              <SecondaryButton label="Histórico" className="flex-1" />
             </Link>
           </View>
         </View>
       </Card>
 
       <View className="flex-row gap-3">
-        <MetricCard label="Mes" value={`${dashboard.totalWorkoutsThisMonth}`} detail="treinos" />
+        <MetricCard label="Mês" value={`${dashboard.totalWorkoutsThisMonth}`} detail="treinos" />
         <MetricCard label="Streak" value={`${dashboard.workoutStreak}`} detail="dias" />
       </View>
       <View className="flex-row gap-3">
-        <MetricCard label="Peso" value={dashboard.cards.currentWeight ? `${dashboard.cards.currentWeight}kg` : "--"} detail="ultimo" />
-        <MetricCard label="RPE" value={dashboard.cards.averageEffort ? `${dashboard.cards.averageEffort}/10` : "--"} detail="medio" />
+        <MetricCard label="Peso" value={dashboard.cards.currentWeight ? `${dashboard.cards.currentWeight}kg` : "--"} detail="último" />
+        <MetricCard label="RPE" value={dashboard.cards.averageEffort ? `${dashboard.cards.averageEffort}/10` : "--"} detail="médio" />
       </View>
 
       <Card className="gap-3">
-        <Image source={scienceCoachImage} className="h-32 w-full rounded-2xl" resizeMode="cover" />
+        <Image source={guideCoachImage} className="h-32 w-full rounded-2xl" resizeMode="cover" />
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-2">
             <Sparkles color="#36f58a" size={18} />
-            <Text className="text-lg font-black text-white">Coach cientifico</Text>
+            <Text className="text-lg font-black text-white">Guia rápido</Text>
           </View>
-          <ChevronRight color="#95a39b" size={18} />
+          <Text className="rounded-full bg-panel2 px-3 py-1 text-xs font-black text-neon">3 passos</Text>
         </View>
-        {dashboard.science.recommendations.slice(0, 3).map((item) => (
-          <View key={item.id} className="rounded-2xl bg-panel2 p-3">
-            <Text className="font-black text-white">{item.title}</Text>
-            <Text className="mt-1 text-sm leading-5 text-muted">{item.summary}</Text>
+        {guideSteps.map((item, index) => (
+          <View key={item.id} className="flex-row gap-3 rounded-2xl bg-panel2 p-3">
+            <Text className="h-8 w-8 rounded-full bg-neon pt-1 text-center text-xs font-black text-black">{index + 1}</Text>
+            <View className="flex-1">
+              <Text className="font-black text-white">{item.title}</Text>
+              <Text className="mt-1 text-sm leading-5 text-muted">{item.action}</Text>
+            </View>
           </View>
         ))}
+        <View className="rounded-2xl border border-neon/30 bg-neon/10 p-3">
+          <Text className="text-xs font-black uppercase tracking-widest text-neon">Foco</Text>
+          <Text className="mt-1 text-sm leading-5 text-white">{guideFocus}</Text>
+        </View>
       </Card>
 
       <Card className="gap-3">
@@ -96,7 +107,7 @@ export default function HomeDashboardScreen() {
             <View key={item.muscleGroup} className="gap-2">
               <View className="flex-row justify-between">
                 <Text className="font-bold text-white">{item.muscleGroup}</Text>
-                <Text className="font-black text-neon">{item.sets} series</Text>
+                <Text className="font-black text-neon">{item.sets} séries</Text>
               </View>
               <View className="h-2 overflow-hidden rounded-full bg-black/30">
                 <View className="h-full rounded-full bg-neon" style={{ width }} />
@@ -107,7 +118,7 @@ export default function HomeDashboardScreen() {
       </Card>
 
       <LineChart title="Peso corporal" subtitle="Registros de medidas" data={weightData} unit="kg" />
-      <LineChart title="Carga no exercicio" subtitle={dashboard.exerciseLoadTrend.at(-1)?.exerciseName ?? "Carga usada"} data={loadData} unit="kg" />
+      <LineChart title="Carga no exercício" subtitle={dashboard.exerciseLoadTrend.at(-1)?.exerciseName ?? "Carga usada"} data={loadData} unit="kg" />
     </ScrollView>
   );
 }
