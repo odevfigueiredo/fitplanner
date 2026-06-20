@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "FitPlanner",
-  description: "Workout planning, physical progress and load tracking dashboard.",
+  description: "Planejamento de treinos, progresso fisico e acompanhamento de cargas.",
   icons: {
     icon: "/assets/fitplanner-mark.png",
     apple: "/assets/fitplanner-mark.png",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body>{children}</body>
     </html>
   );

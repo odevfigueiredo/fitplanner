@@ -16,7 +16,7 @@ function formatValue(value: number, unit?: string) {
   return unit ? `${display}${unit}` : display;
 }
 
-export function MetricLineChart({ title, subtitle, data, unit, color = "#39ff88" }: MetricLineChartProps) {
+export function MetricLineChart({ title, subtitle, data, unit, color = "#fc4c02" }: MetricLineChartProps) {
   const width = 640;
   const height = 260;
   const padding = { top: 28, right: 28, bottom: 46, left: 54 };
@@ -41,14 +41,14 @@ export function MetricLineChart({ title, subtitle, data, unit, color = "#39ff88"
   const last = points.at(-1);
 
   return (
-    <div className="min-w-0 rounded-lg border border-[var(--line)] bg-[var(--panel)] p-4 md:p-5">
+    <div className="fitness-card min-w-0 p-4 md:p-5">
       <div className="flex flex-col justify-between gap-2 md:flex-row md:items-start">
         <div>
           <p className="font-black text-white">{title}</p>
           <p className="mt-1 text-sm text-[var(--muted)]">{subtitle}</p>
         </div>
         {last ? (
-          <span className="w-fit rounded-full bg-[rgba(57,255,136,0.12)] px-3 py-1 text-xs font-black text-[var(--neon)]">
+          <span className="w-fit rounded-full bg-[rgba(252,76,2,0.14)] px-3 py-1 text-xs font-black text-[var(--accent)]">
             {formatValue(last.value, unit)}
           </span>
         ) : null}
@@ -72,8 +72,8 @@ export function MetricLineChart({ title, subtitle, data, unit, color = "#39ff88"
               const value = domainMax - ((domainMax - domainMin) * tick) / 3;
               return (
                 <g key={tick}>
-                  <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(255,255,255,0.08)" />
-                  <text x={padding.left - 12} y={y + 4} textAnchor="end" fill="rgba(255,255,255,0.46)" fontSize="12">
+                  <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(255,255,255,0.075)" />
+                  <text x={padding.left - 12} y={y + 4} textAnchor="end" fill="rgba(255,255,255,0.5)" fontSize="12" fontWeight="700">
                     {formatValue(value, unit)}
                   </text>
                 </g>
@@ -83,17 +83,17 @@ export function MetricLineChart({ title, subtitle, data, unit, color = "#39ff88"
             <polyline points={line} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
             {points.map((point) => (
               <g key={`${point.label}-${point.value}`}>
-                <circle cx={point.x} cy={point.y} r="6" fill="#0b0f0d" stroke={color} strokeWidth="3" />
+                <circle cx={point.x} cy={point.y} r="6" fill="#111111" stroke={color} strokeWidth="3" />
                 <title>{`${point.label}: ${formatValue(point.value, unit)}`}</title>
               </g>
             ))}
             {first ? (
-              <text x={first.x} y={height - 18} textAnchor="middle" fill="rgba(255,255,255,0.58)" fontSize="12">
+              <text x={first.x} y={height - 18} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="12" fontWeight="700">
                 {first.label}
               </text>
             ) : null}
             {last && last !== first ? (
-              <text x={last.x} y={height - 18} textAnchor="middle" fill="rgba(255,255,255,0.58)" fontSize="12">
+              <text x={last.x} y={height - 18} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="12" fontWeight="700">
                 {last.label}
               </text>
             ) : null}

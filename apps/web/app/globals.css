@@ -2,12 +2,21 @@
 
 :root {
   color-scheme: dark;
-  --background: #080b0a;
-  --panel: #111615;
-  --panel-2: #18201d;
-  --line: #26312d;
-  --neon: #36f58a;
-  --muted: #95a39b;
+  --background: #090909;
+  --panel: #141414;
+  --panel-2: #1d1d1d;
+  --panel-3: #252525;
+  --line: #2f2f2f;
+  --line-strong: #444444;
+  --neon: #fc4c02;
+  --accent: #fc4c02;
+  --accent-2: #ff7a1a;
+  --blue: #2f80ed;
+  --green: #22c55e;
+  --yellow: #facc15;
+  --muted: #a3a3a3;
+  --muted-2: #737373;
+  --card-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
 }
 
 html,
@@ -18,11 +27,12 @@ body {
   background: var(--background);
   color: #f8fafc;
   overflow-x: hidden;
+  text-rendering: geometricPrecision;
 }
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   overflow-x: hidden;
 }
 
@@ -37,6 +47,56 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--accent);
+}
+
+::selection {
+  background: rgba(252, 76, 2, 0.32);
+}
+
+.fitness-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    var(--panel);
+  box-shadow: var(--card-shadow);
+}
+
+.fitness-subcard {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.fitness-chip {
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--muted);
+}
+
+.fitness-input {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: #ffffff;
+  outline: none;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.fitness-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(252, 76, 2, 0.16);
 }
 
 .no-scrollbar {

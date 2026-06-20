@@ -12,7 +12,7 @@ function initials(value: string) {
     .toUpperCase();
 }
 
-const accents = ["#36f58a", "#8cffd2", "#d6ff65", "#74a7ff", "#f6d365", "#ff8f70"];
+const accents = ["#fc4c02", "#ff7a1a", "#2f80ed", "#22c55e", "#facc15", "#ef4444"];
 
 export function ExerciseBadge({ label, detail }: { label: string; detail?: string | null }) {
   const accent = accents[hashText(`${label}${detail ?? ""}`) % accents.length];

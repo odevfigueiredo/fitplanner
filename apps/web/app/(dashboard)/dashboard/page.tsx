@@ -26,10 +26,58 @@ export default function DashboardPage() {
     data.science.weeklyMuscleSets.find((item) => item.status === "low" || item.status === "high")?.message ??
     data.science.recommendations[0]?.action ??
     "Crie um treino simples, registre a sessão e revise seu progresso depois.";
+  const nextWorkout = data.weeklyWorkouts[0];
 
   return (
     <div className="grid gap-5 md:gap-6">
       <PageHeader title="Painel" subtitle="Métricas de treino, sequência, carga e evolução corporal em uma visão rápida." />
+
+      <section className="fitness-card grid overflow-hidden lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative min-h-[260px]">
+          <img src={getTrainingTypeImage(nextWorkout?.type ?? "Strength")} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/10" />
+          <div className="relative flex h-full min-h-[260px] flex-col justify-end p-5 md:p-7">
+            <p className="text-xs font-black uppercase text-[var(--accent)]">Próximo treino</p>
+            <h2 className="mt-2 max-w-xl text-3xl font-black leading-tight text-white md:text-5xl">
+              {nextWorkout?.name ?? "Monte seu próximo treino"}
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-zinc-200">
+              {nextWorkout
+                ? `${nextWorkout.exerciseCount} exercícios planejados para manter volume, carga e consistência no trilho.`
+                : "Crie um treino e deixe a sessão pronta antes de chegar à academia."}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/workouts" className="rounded-lg bg-[var(--accent)] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[var(--accent-2)]">
+                Ver treinos
+              </Link>
+              <Link href="/history" className="rounded-lg border border-white/20 bg-black/20 px-4 py-2.5 text-sm font-black text-white transition hover:border-white/50">
+                Histórico
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="grid content-between gap-4 p-5 md:p-7">
+          <div>
+            <p className="text-xs font-black uppercase text-[var(--muted)]">Resumo da semana</p>
+            <p className="mt-2 text-2xl font-black text-white">Consistência primeiro, carga depois.</p>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Use o painel para enxergar frequência, esforço e grupos musculares sem perder tempo entre telas.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="fitness-subcard p-3">
+              <p className="text-xs font-bold text-[var(--muted)]">Treinos</p>
+              <p className="mt-1 text-2xl font-black text-white">{data.totalWorkoutsThisMonth}</p>
+            </div>
+            <div className="fitness-subcard p-3">
+              <p className="text-xs font-bold text-[var(--muted)]">Streak</p>
+              <p className="mt-1 text-2xl font-black text-white">{data.workoutStreak}d</p>
+            </div>
+            <div className="fitness-subcard p-3">
+              <p className="text-xs font-bold text-[var(--muted)]">RPE</p>
+              <p className="mt-1 text-2xl font-black text-white">{data.cards.averageEffort ?? "--"}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-4">
         <MetricCard label="Este mês" value={`${data.totalWorkoutsThisMonth}`} detail="treinos registrados" />
